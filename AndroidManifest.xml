@@ -9,15 +9,6 @@
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 			</intent-filter>
-			<intent-filter>
-				<action android:name="nu.kabo.android.beat.UPDATE" />
-			</intent-filter>
-			<intent-filter>
-				<action android:name="android.intent.action.SCREEN_ON" />
-			</intent-filter>
-			<intent-filter>
-				<action android:name="android.intent.action.SCREEN_OFF" />
-			</intent-filter>
 			<meta-data android:name="android.appwidget.provider" 
 				android:resource="@xml/beat_provider" />
 		</receiver>
