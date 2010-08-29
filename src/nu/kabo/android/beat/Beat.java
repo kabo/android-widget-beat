@@ -37,8 +37,9 @@ public class Beat extends AppWidgetProvider {
  			ComponentName thisWidget = new ComponentName(context, Beat.class);
  			RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.main);
  			AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
- 			remoteViews.setTextViewText(R.id.widget_textview, intent.getStringExtra("time"));
- 			Log.d(TAG, "Updating widget time to "+intent.getStringExtra("time"));
+ 			String t = intent.getStringExtra("time");
+ 			Log.d(TAG, "Updating widget time to "+t);
+ 			remoteViews.setTextViewText(R.id.widget_textview, t);
  			appWidgetManager.updateAppWidget(thisWidget, remoteViews);
  		}
 	}

@@ -28,7 +28,7 @@ public class BeatService extends Service {
         		double cur_time = GetTime();
         		double cur_time_dec = cur_time-(int)cur_time;
         		//Thread.sleep(5000);
-				Thread.sleep((int)Math.ceil(87000*(1-cur_time_dec))); // some extra time here
+				Thread.sleep((int)Math.ceil(90000*(1-cur_time_dec))); // some extra time here
 			} catch (InterruptedException e) {
 				return;
 			} catch (Exception e) {
