@@ -1,8 +1,4 @@
+- använda alarm istället för sleep
 - klicka på den för att komma åt meny
   - byta stil, strlk
   - kunna visa 100-delar
-
-- bara uppdatera sej när widgeten syns
-  - kolla om widget är active/synlig?
-  - stänga av update på sleep, starta den på wake?
-  - starta update på category_home?
