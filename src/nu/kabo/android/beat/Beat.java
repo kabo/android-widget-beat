@@ -1,85 +1,46 @@
 package nu.kabo.android.beat;
 
-import java.util.Calendar;
-import java.util.TimeZone;
-
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViews;
 
 public class Beat extends AppWidgetProvider {
 	
 	protected static final String TAG = "Beat";
-	protected Thread notifyingThread;
-	protected ComponentName thisWidget;
-	protected RemoteViews remoteViews;
-	protected AppWidgetManager appWidgetManager;
-	
-	private Handler handler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-			UpdateTime();
-		}
-	};
-	
-	private Runnable mTask = new Runnable() {
-        public void run() {
-        	try {
-        		handler.sendEmptyMessage(0);
-        		double cur_time = GetTime();
-        		double cur_time_dec = cur_time-(int)cur_time;
-				Thread.sleep((int)Math.ceil(87000*(1-cur_time_dec))); // some extra time here
-			} catch (InterruptedException e) {
-				return;
-			} catch (Exception e) {
-				Log.e(TAG, "Error: " + e.getMessage(), e);
-			}
-        	while(true) {
-        		try {
-            		handler.sendEmptyMessage(0);
-            		Thread.sleep(86400); // sleep one beat
-				} catch (InterruptedException e) {
-					Log.d(TAG, "Caught interrupt, exiting thread");
-					return;
-				} catch (Exception e) {
-					Log.e(TAG, "Error: " + e.getMessage(), e);
-				}
-        	}
-        }
-    };
     
 	public void onEnabled(Context context) {
-		thisWidget = new ComponentName(context, Beat.class);
-		remoteViews = new RemoteViews(context.getPackageName(), R.layout.main);
-		appWidgetManager = AppWidgetManager.getInstance(context);
-		notifyingThread = new Thread(mTask, "NotifyingService");
-		notifyingThread.start();
+		Intent intent = new Intent();
+		intent.setClassName(context.getPackageName(), context.getPackageName()+".BeatService");
+		intent.setAction("nu.kabo.android.beat.START_SERVICE");
+		Log.d(TAG, "sending start-intent to service");
+		context.startService(intent);
 	}
 	
 	public void onDisabled(Context context) {
 		// exit, causing the notifyingThread to die as well
-		System.exit(0);
+		//System.exit(0);
+		Intent intent = new Intent();
+		intent.setClassName(context.getPackageName(), context.getPackageName()+".BeatService");
+		intent.setAction("nu.kabo.android.beat.STOP_SERVICE");
+		Log.d(TAG, "sending stop-intent to service");
+		context.stopService(intent);
 	}
 	
-	private void UpdateTime() {
-		Log.d(TAG, "Updating time");
-		remoteViews.setTextViewText(R.id.widget_textview,
-				"@" + GetTimeString());
-		appWidgetManager.updateAppWidget(thisWidget, remoteViews);
-	}
-	
-	public double GetTime() {
-		Calendar t = Calendar.getInstance(TimeZone.getTimeZone("GMT+0100"));
-		return (double)(( ( ( t.get(Calendar.HOUR_OF_DAY) + (t.get(Calendar.MINUTE)/60.0) + (t.get(Calendar.SECOND)/3600.0) ) ) / 24.0 ) * 1000.0);
-	}
-	public String GetTimeString() {
-		String ITime = "00" + (int)GetTime();
-		return (ITime.substring(ITime.length()-3));
+	public void onReceive(Context context, Intent intent) {
+ 		super.onReceive(context, intent);
+ 		//Log.d(TAG, intent.getAction());
+ 		if (intent.getAction().equals("nu.kabo.android.beat.UPDATE")) {
+ 			ComponentName thisWidget = new ComponentName(context, Beat.class);
+ 			RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.main);
+ 			AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+ 			remoteViews.setTextViewText(R.id.widget_textview, intent.getStringExtra("time"));
+ 			Log.d(TAG, "Updating widget time to "+intent.getStringExtra("time"));
+ 			appWidgetManager.updateAppWidget(thisWidget, remoteViews);
+ 		}
 	}
 	
 }

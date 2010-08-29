@@ -9,9 +9,20 @@
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 			</intent-filter>
+			<intent-filter>
+				<action android:name="nu.kabo.android.beat.UPDATE" />
+			</intent-filter>
 			<meta-data android:name="android.appwidget.provider" 
 				android:resource="@xml/beat_provider" />
 		</receiver>
+		<service android:name=".BeatService">
+			<intent-filter>
+				<action android:name="nu.kabo.android.beat.START_SERVICE" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="nu.kabo.android.beat.STOP_SERVICE" />
+			</intent-filter>
+		</service>
 
     </application>
 
